@@ -1,6 +1,6 @@
 import pandas as pd 
 import numpy as np
-import catboost as cbt
+import lightgbm as lgb
 from sklearn.model_selection import GridSearchCV 
 
 
@@ -48,20 +48,17 @@ Y = Y[np.isfinite(Y)]
 
 index = np.arange(len(X))
 
-print("worked 2")
-
 cbt_param_grid = {
     'iterations': [500],
     'learning_rate': [0.1, 0.05],
-    'depth': [20], #20, 25, 15
+    'depth': [15], #4, 8, 15
     'l2_leaf_reg': [1, 3, 5],
     'subsample': [0.5, 1.0],
     'border_count': [32, 63, 128, 255]
 }
 
-model = cbt.CatBoostRegressor(objective='MAE', random_seed=42)
+model = cbt.CatBoostRegressor(random_seed=42)
 
-print("worked 3")
 # Initialize the GridSearchCV for CatBoost
 grid_search = GridSearchCV(
     estimator=model,
@@ -70,9 +67,8 @@ grid_search = GridSearchCV(
     scoring='neg_mean_absolute_error'
 )
 
-print("worked 4")
 # Fit the grid search to the data
-grid_search.fit(X, Y,verbose=50)
+grid_search.fit(X, Y)
 
 # Get the best hyperparameter values and corresponding score
 best_params = grid_search.best_params_

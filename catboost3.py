@@ -48,6 +48,8 @@ Y = Y[np.isfinite(Y)]
 
 index = np.arange(len(X))
 
+print("worked 2")
+
 cbt_param_grid = {
     'iterations': [500],
     'learning_rate': [0.1, 0.05],
@@ -57,8 +59,9 @@ cbt_param_grid = {
     'border_count': [32, 63, 128, 255]
 }
 
-model = cbt.CatBoostRegressor(random_seed=42)
+model = cbt.CatBoostRegressor(objective='MAE', random_seed=42)
 
+print("worked 3")
 # Initialize the GridSearchCV for CatBoost
 grid_search = GridSearchCV(
     estimator=model,
@@ -67,8 +70,9 @@ grid_search = GridSearchCV(
     scoring='neg_mean_absolute_error'
 )
 
+print("worked 4")
 # Fit the grid search to the data
-grid_search.fit(X, Y)
+grid_search.fit(X, Y, verbose=50)
 
 # Get the best hyperparameter values and corresponding score
 best_params = grid_search.best_params_
